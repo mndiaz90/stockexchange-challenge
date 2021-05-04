@@ -1,0 +1,53 @@
+.headerTable{
+    display: grid;
+    grid-template-columns: 0.3fr 1fr 2fr 1fr 0.3fr;
+    align-items: center;
+
+    margin-top: 1rem;
+
+    border: 1px solid var(--gray-100);
+    background: var(--gray-100);
+    height: 3rem;
+
+    span{
+        font-weight: 600;
+    }
+}
+
+.containerData{
+    height: 17rem;
+}
+
+.emptyContainer{
+    text-align: center;
+    p{
+        font-size: 1.5rem;
+    }
+}
+
+.row{
+    display: grid;
+    grid-template-columns: 0.3fr 1fr 2fr 1fr 0.3fr;
+    align-items: center;
+    justify-content: center;
+
+    background: var(--gray-50);
+
+    padding: 0.5rem;
+    border: 1px solid var(--gray-100);
+    height: 3rem;
+    transition: transform 100ms ease-in-out;
+
+    button{
+        border: none;
+        background: none;
+    }
+
+    svg{
+        color: var(--gray-500);
+    }
+
+    &:hover{
+        transform: translateY(4px);
+    }
+}

@@ -1,5 +1,6 @@
 :root {
   --white: #FFF;
+  --light-blue: #4a93cf;
 
   --gray-50: #F7F8FA;
   --gray-100: #E6E8EB;
@@ -14,17 +15,18 @@ body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
-  background: var(--gray-50);
+  background: var(--white);
   font-size: 1rem;
-}
-
-h1, h2, h3, h4, h5, h6{
-  color: var(--gray-800);
+  color: var(--gray-800)
 }
 
 a {
   color: inherit;
   text-decoration: none;
+}
+
+ul, li{
+  list-style: none;
 }
 
 * {
@@ -33,4 +35,30 @@ a {
 
 button{
   cursor: pointer;
+}
+
+.pagination{
+  margin: auto;
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+
+  cursor: pointer;
+  width: 30rem;
+
+  li{
+    padding: 0.5rem 1rem;
+    text-align: center;
+    border-radius: 5px;
+
+    &:hover:not(.active) {
+      background-color: var(--gray-100);
+      cursor: pointer;
+    }
+  }
+}
+
+.paginationLinkActive{
+  background: var(--light-blue);
+  color: var(--white);
 }

@@ -6,8 +6,12 @@
 
     input{
         border: none;
-        padding: 1rem ;
         outline: none;
+        
+        padding: 1rem ;
+        width: 100%;
+
+        color: var(--gray-800);
         font-size: 1rem;
         background: transparent;
     }
