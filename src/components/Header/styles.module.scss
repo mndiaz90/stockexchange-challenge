@@ -1,10 +1,12 @@
 .container{
-    display: grid;
-    grid-template-rows: repeat(1fr);
     height: 9rem;
 
     img{
         height: 6rem;
         width: 22rem;
+    }
+
+    h2{
+        margin-top: 2rem;
     }
 }
