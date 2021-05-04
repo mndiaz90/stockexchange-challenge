@@ -1,5 +1,6 @@
 import { Header } from '../components/Header';
 import Head from 'next/head';
+import { SearchCompanies } from '../components/SearchCompanies';
 import styles from '../styles/Home.module.scss';
 
 export default function Home() {
@@ -10,6 +11,12 @@ export default function Home() {
         <title>Stock exchange</title>
       </Head>
       <Header />
+      <main>
+        <div className={styles.containerSearch}>
+          <SearchCompanies />
+          <button>Compare</button>
+        </div>
+      </main>
     </div>
   )
 }

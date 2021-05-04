@@ -6,6 +6,28 @@
   height: 100vh;
 }
 
+.containerSearch{
+  display: grid;
+  grid-template-columns: 1fr 0.2fr;
+  gap: 2rem;
+
+  align-items: center;
+  justify-content: center;
+  margin-top: 2rem;
+
+  button{
+    width: 7rem;
+    height: 3rem;
+    
+    background: var(--gray-500);
+    color: var(--white);
+    font-size: 1rem;
+    border-radius: 0.3rem;
+    border: none;
+  }
+
+}
+
 @media (max-width: 600px) {
   .grid {
     width: 100%;

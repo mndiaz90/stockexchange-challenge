@@ -1,0 +1,18 @@
+.container{
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    border-bottom: 1px solid var(--gray-200);
+
+    input{
+        border: none;
+        padding: 1rem ;
+        outline: none;
+        font-size: 1rem;
+        background: transparent;
+    }
+
+    svg{
+        margin-left: 3rem;
+    }
+}
