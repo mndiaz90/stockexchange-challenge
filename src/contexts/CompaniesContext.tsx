@@ -1,71 +1,87 @@
 import { ChangeEvent, createContext, useEffect, useState } from "react";
 
 type Company = {
-    symbol: string;
-    name: string;
-    price: number;
+	symbol: string;
+	name: string;
+	price: number;
 }
 
 type CompaniesContextData = {
-    inputSearch: string;
-    onChangeInput: (event: ChangeEvent<HTMLInputElement>) => void;
-    currentPageCompanies: Company[];
-    pageCount: number;
-    handlePageClick: ({ }) => void;
-    setAllCompanies: Function,
-    forcePage: number;
+	inputSearch: string;
+	onChangeInput: (event: ChangeEvent<HTMLInputElement>) => void;
+	currentPageCompanies: Company[];
+	pageCount: number;
+	handlePageClick: ({ }) => void;
+	setAllCompanies: Function,
+	forcePage: number;
+	onSelectCompany: (checked: boolean, company: Company) => void,
+	companiesSelected: string[]
 }
 
 export const CompaniesContext = createContext({} as CompaniesContextData);
 
 export const CompaniesContextProvider = ({ children }) => {
-    const [inputSearch, setInputSearch] = useState("");
-    const [offset, setOffset] = useState(0);
-    const [pageCount, setPageCount] = useState(0);
-    const [forcePage, setForcePage] = useState(0);
-    const [allCompanies, setAllCompanies] = useState<Company[]>([]);
-    const [currentPageCompanies, setCurrentPageCompanies] = useState<Company[]>([]);
-    const perPage = 5;
+	const [inputSearch, setInputSearch] = useState("");
+	const [offset, setOffset] = useState(0);
+	const [pageCount, setPageCount] = useState(0);
+	const [forcePage, setForcePage] = useState(0);
+	const [allCompanies, setAllCompanies] = useState<Company[]>([]);
+	const [currentPageCompanies, setCurrentPageCompanies] = useState<Company[]>([]);
+	const [companiesSelected, setCompaniesSelected] = useState<string[]>([]);
+	const perPage = 5;
 
-    useEffect(() => {
-        if (allCompanies.length) {
-            setPageCount(allCompanies.length / perPage);
-            setCurrentPageCompanies(allCompanies.slice(offset, offset + perPage));
-        }
-    }, [allCompanies]);
+	useEffect(() => {
+		if (allCompanies.length) {
+			setPageCount(allCompanies.length / perPage);
+			setCurrentPageCompanies(allCompanies.slice(offset, offset + perPage));
+		}
+	}, [allCompanies]);
 
-    function handlePageClick({ selected }) {
-        let filteredCompanies = allCompanies.filter((company: Company) => {
-            return company.symbol.toLowerCase().includes(inputSearch.toLowerCase().trim())
-        });
-        setOffset(Math.ceil(selected * perPage));
-        setForcePage(selected);
-        setCurrentPageCompanies(filteredCompanies.slice(selected * perPage, (selected * perPage) + perPage));
-    }
+	function handlePageClick({ selected }) {
+		let filteredCompanies = allCompanies.filter((company: Company) => {
+			return company.symbol.toLowerCase().includes(inputSearch.toLowerCase().trim())
+		});
+		setOffset(Math.ceil(selected * perPage));
+		setForcePage(selected);
+		setCurrentPageCompanies(filteredCompanies.slice(selected * perPage, (selected * perPage) + perPage));
+	}
 
-    const onChangeInput = (event: ChangeEvent<HTMLInputElement>) => {
-        setInputSearch(event.target.value);
+	function onSelectCompany(checked: boolean, company: Company) {
+		if (checked) {
+			setCompaniesSelected([...companiesSelected, company.symbol]);
+		}
+		else {
+			const index = companiesSelected.indexOf(company.symbol);
+			companiesSelected.splice(index, 1);
+			setCompaniesSelected([...companiesSelected]);
+		}
+	}
 
-        let filteredCompanies = allCompanies.filter((company: Company) => {
-            return company.symbol.toLowerCase().includes(event.target.value.toLowerCase().trim())
-        });
+	const onChangeInput = (event: ChangeEvent<HTMLInputElement>) => {
+		setInputSearch(event.target.value);
 
-        setOffset(0);
-        setForcePage(0);
-        setPageCount(filteredCompanies.length / perPage);
-        setCurrentPageCompanies(filteredCompanies.slice(0, 0 + perPage));
-    }
+		let filteredCompanies = allCompanies.filter((company: Company) => {
+			return company.symbol.toLowerCase().includes(event.target.value.toLowerCase().trim())
+		});
 
-    return <CompaniesContext.Provider
-        value={{
-            inputSearch,
-            onChangeInput,
-            currentPageCompanies,
-            pageCount,
-            handlePageClick,
-            setAllCompanies,
-            forcePage
-        }}>
-        {children}
-    </CompaniesContext.Provider>
+		setOffset(0);
+		setForcePage(0);
+		setPageCount(filteredCompanies.length / perPage);
+		setCurrentPageCompanies(filteredCompanies.slice(0, 0 + perPage));
+	}
+
+	return <CompaniesContext.Provider
+		value={{
+			inputSearch,
+			onChangeInput,
+			currentPageCompanies,
+			pageCount,
+			handlePageClick,
+			setAllCompanies,
+			forcePage,
+			onSelectCompany,
+			companiesSelected
+		}}>
+		{children}
+	</CompaniesContext.Provider>
 }

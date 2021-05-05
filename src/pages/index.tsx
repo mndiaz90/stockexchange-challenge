@@ -5,6 +5,7 @@ import { CompaniesTable } from '../components/CompaniesTable';
 import { useContext, useEffect, useState } from 'react';
 import { CompaniesContext } from '../contexts/CompaniesContext';
 import { api, apikey } from '../services/api';
+import Link from 'next/link'
 
 import styles from '../styles/Home.module.scss';
 
@@ -20,7 +21,7 @@ type HomeProps = {
 
 export default function Home({ data }: HomeProps) {
   const [isLoading, setIsLoading] = useState(true);
-  const { setAllCompanies } = useContext(CompaniesContext);
+  const { setAllCompanies, companiesSelected } = useContext(CompaniesContext);
 
   useEffect(() => {
     if (data.length) {
@@ -38,11 +39,13 @@ export default function Home({ data }: HomeProps) {
       <main>
         <div className={styles.containerSearch}>
           <SearchCompanies />
-          <button>Compare</button>
+          <Link href={`compare/${companiesSelected}`}>
+            <button>Compare</button>
+          </Link>
         </div>
         {
           isLoading ?
-            <img src="/loading.gif" alt="Loading" /> :
+            <img src="/loading.gif" alt="loading" /> :
             <CompaniesTable />
         }
       </main>
