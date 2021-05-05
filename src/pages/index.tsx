@@ -51,7 +51,11 @@ export default function Home({ data }: HomeProps) {
 }
 
 export async function getServerSideProps() {
-  const { data } = await api.get(`stock/list?apikey=${apikey}`)
+  const { data } = await api.get(`stock/list?`, {
+    params: {
+      apikey: apikey
+    }
+  });
 
   return {
     props: {
