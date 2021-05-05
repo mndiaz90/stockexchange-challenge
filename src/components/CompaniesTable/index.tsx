@@ -2,6 +2,8 @@ import { ArrowForward } from '@material-ui/icons';
 import { useContext } from 'react';
 import ReactPaginate from 'react-paginate';
 import { CompaniesContext } from '../../contexts/CompaniesContext';
+import Link from 'next/link';
+
 import styles from './styles.module.scss';
 
 type Company = {
@@ -34,9 +36,11 @@ export const CompaniesTable = () => {
                             <span>{company.symbol}</span>
                             <span>{company.name}</span>
                             <span>${company.price}</span>
-                            <button>
-                                <ArrowForward />
-                            </button>
+                            <Link href={`companydata/${company.symbol}`}>
+                                <button>
+                                    <ArrowForward />
+                                </button>
+                            </Link>
                         </div>
                     ))
                     :
