@@ -45,7 +45,10 @@ export default function Home({ data }: HomeProps) {
         </div>
         {
           isLoading ?
-            <img src="/loading.gif" alt="loading" /> :
+            <div className={styles.containerLoading}>
+              <h2>Loading </h2>
+              <img src="/loading.gif" alt="loading" />
+            </div> :
             <CompaniesTable />
         }
       </main>
