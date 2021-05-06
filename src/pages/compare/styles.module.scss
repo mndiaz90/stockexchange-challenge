@@ -45,7 +45,10 @@
 
 @media (max-width: 600px) {
   .container, .highcharts{
-		padding: 0;
+		padding: 0 !important;
 		width: 100%;
+		.header{
+			margin: 1.3rem;
+		}
 	}
 }
