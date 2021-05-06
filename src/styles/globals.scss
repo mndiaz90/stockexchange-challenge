@@ -39,12 +39,11 @@ button{
 
 .pagination{
   margin: auto;
-  display: flex !important;
+  display: flex;
   justify-content: center;
   align-items: center;
-
+  padding: 0;
   cursor: pointer;
-  width: 30rem;
 
   li{
     padding: 0.5rem 1rem;
@@ -61,4 +60,21 @@ button{
 .paginationLinkActive{
   background: var(--light-blue);
   color: var(--white);
+}
+
+@media (max-width: 600px) {
+  .pagination {
+    width: 50%;
+  }
+}
+
+@media (max-width: 510px) {
+  .pagination {
+    li{
+      display: none;
+    }
+    .previous , .next{
+      display: block;
+    }
+  }
 }
