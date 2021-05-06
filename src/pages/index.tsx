@@ -2,10 +2,10 @@ import { Header } from '../components/Header';
 import Head from 'next/head';
 import { SearchCompanies } from '../components/SearchCompanies';
 import { CompaniesTable } from '../components/CompaniesTable';
-import { useContext, useEffect, useState } from 'react';
+import { MouseEvent, useContext, useEffect, useState } from 'react';
 import { CompaniesContext } from '../contexts/CompaniesContext';
 import { api, apikey } from '../services/api';
-import Link from 'next/link'
+import { useRouter } from 'next/router';
 
 import styles from '../styles/Home.module.scss';
 
@@ -21,6 +21,7 @@ type HomeProps = {
 }
 
 export default function Home({ data, error }: HomeProps) {
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
   const { setAllCompanies, companiesSelected } = useContext(CompaniesContext);
 
@@ -34,6 +35,16 @@ export default function Home({ data, error }: HomeProps) {
     }
   }, [data, error]);
 
+  function onClickCompare(event: MouseEvent<HTMLButtonElement>) {
+    event.preventDefault();
+
+    if (companiesSelected.length < 2) {
+      alert('Select 2 or more companies to compare.');
+    } else {
+      router.push(`compare/${companiesSelected}`)
+    }
+  }
+
   return (
     <div className={styles.container}>
       <Head>
@@ -43,9 +54,7 @@ export default function Home({ data, error }: HomeProps) {
       <main>
         <div className={styles.containerSearch}>
           <SearchCompanies />
-          <Link href={`compare/${companiesSelected}`}>
-            <button>Compare</button>
-          </Link>
+          <button onClick={onClickCompare}>Compare</button>
         </div>
         {
           isLoading ?
