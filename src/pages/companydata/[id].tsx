@@ -1,10 +1,10 @@
 import { api, apikey } from "../../services/api";
-import { useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { LineColumnChart } from '../../components/Charts/LineColumnChart';
 import { LineChart } from '../../components/Charts/LineChart';
 import { ArrowBack } from "@material-ui/icons";
 import Link from 'next/link';
-import getCompanyData from "../../utils/CompanyData";
+import { getCompanyData } from "../../utils/CompanyData";
 
 import styles from './styles.module.scss';
 
@@ -16,6 +16,8 @@ type Company = {
 	ebitda: number;
 	ebitdaratio: number;
 	operatingExpenses: number;
+	revenue: string;
+	costOfRevenue: string;
 }
 
 type CompanyProps = {
@@ -32,6 +34,7 @@ type Axis = {
 
 export default function Company({ data, symbol, error }: CompanyProps) {
 	const [loading, setLoading] = useState(true);
+	const [period, setPeriod] = useState("10");
 	const [dataYears, setDataYears] = useState<string[]>([]);
 	const [dataGrossProfit, setDataGrossProfit] = useState<Axis>({
 		xaxis: [],
@@ -91,6 +94,27 @@ export default function Company({ data, symbol, error }: CompanyProps) {
 		setLoading(false);
 	}
 
+	function onChangePeriod(event: ChangeEvent<HTMLSelectElement>) {
+		setPeriod(event.target.value);
+		setLoading(true);
+		getCompanyIncomeStatement(event.target.value);
+	}
+
+	async function getCompanyIncomeStatement(limit: string) {
+		try {
+			const { data } = await api.get(`income-statement/${symbol}`, {
+				params: {
+					limit: limit,
+					apikey: apikey
+				}
+			});
+
+			setCompanyChartData(data);
+		} catch (error) {
+			alert(error)
+		}
+	}
+
 	return <div className={styles.container}>
 		<div className={styles.header}>
 			<Link href='/'>
@@ -99,6 +123,14 @@ export default function Company({ data, symbol, error }: CompanyProps) {
 				</button>
 			</Link>
 			<h1>{symbol}</h1>
+			<select
+				value={period}
+				onChange={(event: ChangeEvent<HTMLSelectElement>) => onChangePeriod(event)}
+			>
+				<option value="1">Last year</option>
+				<option value="5">Last 5 years</option>
+				<option value="10">Last 10 years</option>
+			</select>
 		</div>
 		{
 			loading ?
@@ -143,8 +175,7 @@ export const getServerSideProps = async ({ params }) => {
 	} catch (error) {
 		return {
 			props: {
-				error: error.message,
-				symbol: params.id
+				error: error.message
 			}
 		}
 	}

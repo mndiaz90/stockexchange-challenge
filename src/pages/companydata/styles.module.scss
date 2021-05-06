@@ -3,11 +3,28 @@
 
 	.header{
 		display: flex;
+		align-items: center;
+
+		select{
+			margin-left: auto;
+			height: 2rem;
+			width: 8rem;
+
+			border-radius: 5px;
+			background: none;
+			border: 1px solid var(--gray-100);
+
+			outline: none;
+			font-size: 1rem;
+			color: var(--gray-800);
+			font-family: inherit;
+		}
 
 		button{
 			border:none;
 			background: none;
 		}
+	}
 
 	.containerLoading{
 		display: flex;
@@ -25,7 +42,6 @@
 		padding: 1rem 2rem;
 	}
 }
-	}
 
 @media (max-width: 600px) {
   .container, .highcharts{

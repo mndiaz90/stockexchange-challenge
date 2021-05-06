@@ -1,3 +1,5 @@
+import { api, apikey } from "../services/api";
+
 type Company = {
   symbol: string;
   date: string;
@@ -6,10 +8,12 @@ type Company = {
   ebitda: number;
   ebitdaratio: number;
   operatingExpenses: number;
+  revenue: string;
+  costOfRevenue: string;
 }
 
-function getCompanyData(data: Company[]) {
-  const dataCompany = data.reverse();
+export function getCompanyData(company: Company[]) {
+  const dataCompany = company.reverse();
   const lastYears = dataCompany.map((company: Company) => String(new Date(company.date).getFullYear()));
   const grossProfit = dataCompany.map((company: Company) => company.grossProfit);
   const grossProfitRatio = dataCompany.map((company: Company) => company.grossProfitRatio);
@@ -38,4 +42,36 @@ function getCompanyData(data: Company[]) {
   };
 }
 
-export default getCompanyData;
+export async function getCompaniesSelectedData(symbol: string, period: string) {
+
+  return api.get(`income-statement/${symbol}`, {
+    params: {
+      limit: period,
+      apikey: apikey
+    }
+  })
+    .then(({ data }) => {
+      const dataCompany = data.reverse();
+      const lastYears = dataCompany.map((company: Company) => String(new Date(company.date).getFullYear()));
+      const revenue = dataCompany.map((company: Company) => company.revenue);
+      const costOfRevenue = dataCompany.map((company: Company) => company.costOfRevenue);
+
+      const column = {
+        type: 'column',
+        name: `${symbol} - Reveneu`,
+        data: revenue
+      };
+      const spline = {
+        type: 'spline',
+        name: `${symbol} - Cost of reveneu`,
+        data: costOfRevenue
+      };
+
+      return {
+        column,
+        spline,
+        lastYears
+      };
+    })
+    .catch((error) => alert(error));
+}

@@ -1,61 +1,54 @@
-import { api, apikey } from "../../services/api";
-import { useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import Link from 'next/link';
 import { LineMultiplesColumnsChart } from "../../components/Charts/LineMultiplesColumnsChart";
+import { ArrowBack } from "@material-ui/icons";
+import { getCompaniesSelectedData } from "../../utils/CompanyData";
 
 import styles from './styles.module.scss';
-import { ArrowBack } from "@material-ui/icons";
 
-type Company = {
-  symbol: string;
-  date: string;
-  revenue: number;
-  costOfRevenue: number;
+type CompareProps = {
+  companies: string[]
 }
 
-export default function Compare({ companies }) {
+export default function Compare({ companies }: CompareProps) {
   const [loading, setLoading] = useState(true);
+  const [period, setPeriod] = useState("10");
   const [dataSeries, setDataSeries] = useState<Object[]>([]);
   const [xAxis, setXAxis] = useState<string[]>([]);
 
   useEffect(() => {
-    let balance = [];
+    if (companies.length)
+      getAllCompanyData(companies, period);
 
-    companies.forEach((symbol: string, index: number) => {
-      api.get(`income-statement/${symbol}`, {
-        params: {
-          limit: 10,
-          apikey: apikey
-        }
-      })
-        .then(({ data }) => {
-          const dataCompany = data.reverse();
-          const lastYears = dataCompany.map((company: Company) => String(new Date(company.date).getFullYear()));
-          const revenue = dataCompany.map((company: Company) => company.revenue);
-          const costOfRevenue = dataCompany.map((company: Company) => company.costOfRevenue);
-
-          const column = {
-            type: 'column',
-            name: `${symbol} - Reveneu`,
-            data: revenue
-          };
-          const spline = {
-            type: 'spline',
-            name: `${symbol} - Cost of reveneu`,
-            data: costOfRevenue
-          };
-
-          balance.push(column, spline);
-
-          if (index + 1 === companies.length) {
-            setDataSeries(balance);
-            setXAxis(lastYears);
-            setLoading(false)
-          }
-        })
-        .catch((error) => alert(error));
-    });
   }, [companies]);
+
+  function getAllCompanyData(companiesToCompare: string[], period: string) {
+    let series = [];
+
+    companiesToCompare.forEach((symbol: string, index: number) => {
+      getCompaniesSelectedData(symbol, period)
+        .then((data) => {
+          if (data) {
+            series.push(data.column, data.spline);
+
+            if (index + 1 === companiesToCompare.length) {
+              setDataSeries(series);
+              setXAxis(data.lastYears);
+              setLoading(false)
+            }
+          }
+        });
+    });
+  }
+
+  function onChangePeriod(event: ChangeEvent<HTMLSelectElement>) {
+    setPeriod(event.target.value);
+    setLoading(true);
+
+    if (companies.length)
+      getAllCompanyData(companies, event.target.value);
+
+  }
 
   return <div className={styles.container}>
     <div className={styles.header}>
@@ -64,6 +57,14 @@ export default function Compare({ companies }) {
           <ArrowBack />
         </button>
       </Link>
+      <select
+        value={period}
+        onChange={(event: ChangeEvent<HTMLSelectElement>) => onChangePeriod(event)}
+      >
+        <option value="1">Last year</option>
+        <option value="5">Last 5 years</option>
+        <option value="10">Last 10 years</option>
+      </select>
     </div>
     {
       loading ?
@@ -76,7 +77,6 @@ export default function Compare({ companies }) {
           <LineMultiplesColumnsChart xAxis={xAxis} series={dataSeries} />
         </div>
     }
-
   </div>
 }
 
