@@ -16,19 +16,23 @@ type Company = {
 }
 
 type HomeProps = {
-  data: Company[]
+  data?: Company[]
+  error?: string
 }
 
-export default function Home({ data }: HomeProps) {
+export default function Home({ data, error }: HomeProps) {
   const [isLoading, setIsLoading] = useState(true);
   const { setAllCompanies, companiesSelected } = useContext(CompaniesContext);
 
   useEffect(() => {
+    if (error) {
+      return alert(error);
+    }
     if (data.length) {
       setIsLoading(false);
       setAllCompanies(data);
     }
-  }, [data]);
+  }, [data, error]);
 
   return (
     <div className={styles.container}>
@@ -57,15 +61,23 @@ export default function Home({ data }: HomeProps) {
 }
 
 export async function getServerSideProps() {
-  const { data } = await api.get(`stock/list?`, {
-    params: {
-      apikey: apikey
-    }
-  });
+  try {
+    const { data } = await api.get(`stock/list?`, {
+      params: {
+        apikey: apikey
+      }
+    });
 
-  return {
-    props: {
-      data
+    return {
+      props: {
+        data
+      }
+    }
+  } catch (error) {
+    return {
+      props: {
+        error: error.message
+      }
     }
   }
 }

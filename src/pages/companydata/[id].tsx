@@ -4,6 +4,7 @@ import { LineColumnChart } from '../../components/Charts/LineColumnChart';
 import { LineChart } from '../../components/Charts/LineChart';
 import { ArrowBack } from "@material-ui/icons";
 import Link from 'next/link';
+import getCompanyData from "../../utils/CompanyData";
 
 import styles from './styles.module.scss';
 
@@ -18,8 +19,9 @@ type Company = {
 }
 
 type CompanyProps = {
-	data: Company[];
+	data?: Company[];
 	symbol: string;
+	error?: string;
 }
 
 type Axis = {
@@ -28,7 +30,7 @@ type Axis = {
 	y2axis: number[];
 }
 
-export default function Company({ data, symbol }: CompanyProps) {
+export default function Company({ data, symbol, error }: CompanyProps) {
 	const [loading, setLoading] = useState(true);
 	const [dataYears, setDataYears] = useState<string[]>([]);
 	const [dataGrossProfit, setDataGrossProfit] = useState<Axis>({
@@ -56,23 +58,22 @@ export default function Company({ data, symbol }: CompanyProps) {
 	};
 
 	useEffect(() => {
-		const dataCompany = data.reverse();
-		const lastYears = dataCompany.map((company: Company) => String(new Date(company.date).getFullYear()));
-		const grossProfit = dataCompany.map((company: Company) => company.grossProfit);
-		const grossProfitRatio = dataCompany.map((company: Company) => company.grossProfitRatio);
-		const ebitda = dataCompany.map((company: Company) => company.ebitda);
-		const ebitdaRatio = dataCompany.map((company: Company) => company.ebitdaratio);
-		const operatingExpenses = dataCompany.map((company: Company) => company.operatingExpenses);
-		const series = [{
-			name: 'Gross Profit',
-			data: grossProfit
-		}, {
-			name: 'Operating Expenses',
-			data: operatingExpenses
-		}, {
-			name: 'EBITDA',
-			data: ebitda
-		}];
+		if (error) {
+			return alert(error);
+		}
+		setCompanyChartData(data);
+
+	}, [data, error]);
+
+	function setCompanyChartData(data: Company[]) {
+		const {
+			lastYears,
+			grossProfit,
+			grossProfitRatio,
+			ebitda,
+			ebitdaRatio,
+			series
+		} = getCompanyData(data);
 
 		setDataGrossProfit({
 			xaxis: lastYears,
@@ -88,7 +89,7 @@ export default function Company({ data, symbol }: CompanyProps) {
 		setDataSeries(series);
 		setDataYears(lastYears);
 		setLoading(false);
-	}, [data]);
+	}
 
 	return <div className={styles.container}>
 		<div className={styles.header}>
@@ -125,17 +126,26 @@ export default function Company({ data, symbol }: CompanyProps) {
 }
 
 export const getServerSideProps = async ({ params }) => {
-	const { data } = await api.get(`income-statement/${params.id}`, {
-		params: {
-			limit: 10,
-			apikey: apikey
-		}
-	});
+	try {
+		const { data } = await api.get(`income-statement/${params.id}`, {
+			params: {
+				limit: 10,
+				apikey: apikey
+			}
+		});
 
-	return {
-		props: {
-			data,
-			symbol: params.id
+		return {
+			props: {
+				data,
+				symbol: params.id
+			}
+		}
+	} catch (error) {
+		return {
+			props: {
+				error: error.message,
+				symbol: params.id
+			}
 		}
 	}
 }
