@@ -9,6 +9,7 @@ import Router from 'next/router';
 
 import styles from '../styles/Home.module.scss';
 import { GetServerSideProps } from 'next';
+import { CircularProgress } from '@material-ui/core';
 
 type Company = {
   symbol: string;
@@ -60,7 +61,7 @@ export default function Home({ data, error }: HomeProps) {
           isLoading ?
             <div className={styles.containerLoading}>
               <h2>Loading </h2>
-              <img src="/loading.gif" alt="loading" />
+              <CircularProgress />
             </div> :
             <CompaniesTable />
         }

@@ -5,6 +5,7 @@ import { ArrowBack } from "@material-ui/icons";
 import { getCompaniesSelectedData } from "../../utils/CompanyData";
 
 import styles from './styles.module.scss';
+import { CircularProgress } from "@material-ui/core";
 
 type CompareProps = {
   companies: string[]
@@ -70,7 +71,7 @@ export default function Compare({ companies }: CompareProps) {
       loading ?
         <div className={styles.containerLoading}>
           <h2>Loading </h2>
-          <img src="/loading.gif" alt="loading" />
+          <CircularProgress />
         </div>
         :
         <div className={styles.highcharts}>

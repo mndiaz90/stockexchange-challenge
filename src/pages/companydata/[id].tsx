@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { getCompanyData } from "../../utils/CompanyData";
 
 import styles from './styles.module.scss';
+import { CircularProgress } from "@material-ui/core";
 
 type Company = {
 	symbol: string;
@@ -136,7 +137,7 @@ export default function Company({ data, symbol, error }: CompanyProps) {
 			loading ?
 				<div className={styles.containerLoading}>
 					<h2>Loading </h2>
-					<img src="/loading.gif" alt="loading" />
+					<CircularProgress />
 				</div>
 				:
 				<div className={styles.highcharts}>
