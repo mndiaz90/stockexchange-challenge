@@ -72,7 +72,7 @@ export default function Home({ data, error }: HomeProps) {
 
 export const getStaticProps: GetServerSideProps = async () => {
   try {
-    const { data } = await api.get(`stocks/list?`, {
+    const { data } = await api.get(`stock/list?`, {
       params: {
         apikey: apikey
       }
