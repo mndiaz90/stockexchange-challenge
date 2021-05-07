@@ -157,7 +157,17 @@ export default function Company({ data, symbol, error }: CompanyProps) {
 	</div>
 }
 
-export const getServerSideProps = async ({ params }) => {
+export async function getStaticPaths() {
+	const params = ['SPY', 'CMCSA', 'KMI', 'INTC', 'MU'].map(symbol => {
+		return { params: { id: symbol } }
+	})
+	return {
+		paths: params,
+		fallback: 'blocking'
+	};
+}
+
+export const getStaticProps = async ({ params }) => {
 	try {
 		const { data } = await api.get(`income-statement/${params.id}`, {
 			params: {
