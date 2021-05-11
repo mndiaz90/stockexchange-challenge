@@ -13,7 +13,8 @@ type Company = {
 }
 
 export const CompaniesTable = () => {
-	const { currentPageCompanies,
+	const { 
+		currentPageCompanies,
 		pageCount,
 		handlePageClick,
 		forcePage,
