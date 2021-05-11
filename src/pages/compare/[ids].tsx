@@ -32,7 +32,7 @@ export default function Compare({ companies }: CompareProps) {
           if (data) {
             series.push(data.column, data.spline);
 
-            if (index + 1 === companiesToCompare.length) {
+            if (companiesToCompare.length === series.length/2) {
               setDataSeries(series);
               setXAxis(data.lastYears);
               setLoading(false)
@@ -48,7 +48,6 @@ export default function Compare({ companies }: CompareProps) {
 
     if (companies.length)
       getAllCompanyData(companies, event.target.value);
-
   }
 
   return <div className={styles.container}>
