@@ -44,7 +44,7 @@ export const CompaniesTable = () => {
 							<span>{company.symbol}</span>
 							<span>{company.name}</span>
 							<span>${company.price}</span>
-							<Link href={`companydata/${company.symbol}`}>
+							<Link href={`companydata/${company.symbol}`} prefetch={false}>
 								<button>
 									<ArrowForward />
 								</button>
